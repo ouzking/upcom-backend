@@ -1,0 +1,21 @@
+# Dépendances / build
+node_modules/
+dist/
+
+# Secrets — ne JAMAIS committer
+.env
+.env.*
+!.env.example
+supabase/functions/.env
+supabase/functions/.env.*
+!supabase/functions/.env.example
+
+# Supabase CLI (état local)
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+
+# Divers
+.DS_Store
+Thumbs.db
+*.log

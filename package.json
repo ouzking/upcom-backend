@@ -1,0 +1,45 @@
+{
+  "name": "@upcom/supabase",
+  "version": "0.1.0",
+  "description": "UPCOM AGENCY & SERVICES — backend Supabase (migrations, RLS, Storage, Edge Functions) et types partagés.",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "supabase": "npx -y supabase@2",
+    "db:start": "npx -y supabase@2 start",
+    "db:stop": "npx -y supabase@2 stop",
+    "db:reset": "npx -y supabase@2 db reset",
+    "db:lint": "npx -y supabase@2 db lint --level warning",
+    "db:test": "npx -y supabase@2 test db",
+    "db:diff": "npx -y supabase@2 db diff",
+    "db:push": "npx -y supabase@2 db push",
+    "types:gen": "npx -y supabase@2 gen types typescript --local --schema public > src/database.types.ts",
+    "types:gen:linked": "npx -y supabase@2 gen types typescript --linked --schema public > src/database.types.ts",
+    "functions:serve": "npx -y supabase@2 functions serve --env-file supabase/functions/.env",
+    "functions:deploy": "npx -y supabase@2 functions deploy",
+    "functions:test": "cd supabase/functions && deno test --allow-env",
+    "functions:check": "cd supabase/functions && deno check */index.ts && deno lint"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

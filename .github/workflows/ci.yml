@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  database:
+    name: Base de données (migrations, lint, tests RLS, types)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Démarrer Postgres local (applique migrations + seed)
+        run: supabase db start
+
+      - name: Lint SQL (plpgsql_check)
+        run: supabase db lint --level warning --fail-on error
+
+      - name: Tests pgTAP (RLS / permissions)
+        run: supabase test db
+
+      - name: Types TypeScript à jour
+        run: |
+          supabase gen types typescript --local --schema public > src/database.types.ts
+          git diff --exit-code -- src/database.types.ts \
+            || (echo "::error::src/database.types.ts n'est pas à jour. Lancez 'npm run types:gen' et committez." && exit 1)
+
+  functions:
+    name: Edge Functions (check, lint, tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: supabase/functions
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno check */index.ts
+      - run: deno lint
+      - run: deno test --allow-env
+
+  package:
+    name: Package de types (@upcom/supabase)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
