@@ -324,6 +324,19 @@ npm run functions:deploy                                          # fonctions
 secrets `SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`, `SUPABASE_PROJECT_ID` sur l'environnement
 `production` (activer *Required reviewers* pour exiger une validation).
 
+**Configuration Auth + secrets en production** (domaine, e-mails en français, SMTP Resend) :
+
+```bash
+# .env : SUPABASE_ACCESS_TOKEN, SITE_PUBLIC_URL, ADMIN_URL, (RESEND_API_KEY, EMAIL_FROM, NOTIFICATION_EMAIL_TO)
+npm run prod:configure              # aperçu, rien n'est modifié
+npm run prod:configure -- --apply   # applique via la Management API
+```
+
+Le script règle *Site URL* / *Redirect URLs* du back-office, active la connexion e-mail, ferme les
+inscriptions, installe les modèles `supabase/templates/*.html` (invitation, réinitialisation…) et, si une
+clé Resend est fournie, l'envoi SMTP depuis votre domaine ; il met aussi à jour `ALLOWED_ORIGINS`,
+`ADMIN_APP_URL`, `ADMIN_INVITE_REDIRECT_URL` (et les secrets Resend) des Edge Functions.
+
 Ordre recommandé pour une évolution : migration → tests → `types:gen` → tag → déploiement backend →
 mise à jour de `@upcom/supabase` dans `upcom-admin` puis `upcom-frontend`.
 

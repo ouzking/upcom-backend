@@ -58,6 +58,24 @@ enable_confirmations = true
 secure_password_change = true
 max_frequency = "1m0s"
 
+# E-mails d'authentification en français, aux couleurs UPCOM (supabase/templates/).
+# Local : appliqués automatiquement. En ligne : scripts/configure-auth.mjs (Management API).
+[auth.email.template.invite]
+subject = "Votre accès au back-office UPCOM"
+content_path = "./supabase/templates/invite.html"
+
+[auth.email.template.recovery]
+subject = "Réinitialisation de votre mot de passe UPCOM"
+content_path = "./supabase/templates/recovery.html"
+
+[auth.email.template.email_change]
+subject = "Confirmez votre nouvelle adresse e-mail"
+content_path = "./supabase/templates/email_change.html"
+
+[auth.email.template.confirmation]
+subject = "Confirmez votre adresse e-mail"
+content_path = "./supabase/templates/confirmation.html"
+
 [edge_runtime]
 enabled = true
 policy = "per_worker"

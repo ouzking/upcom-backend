@@ -37,7 +37,8 @@
     "functions:serve": "npx -y supabase@2 functions serve --env-file supabase/functions/.env",
     "functions:deploy": "npx -y supabase@2 functions deploy",
     "functions:test": "cd supabase/functions && deno test --allow-env",
-    "functions:check": "cd supabase/functions && deno check */index.ts && deno lint"
+    "functions:check": "cd supabase/functions && deno check */index.ts && deno lint",
+    "prod:configure": "node --env-file=.env scripts/configure-production.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.2"
