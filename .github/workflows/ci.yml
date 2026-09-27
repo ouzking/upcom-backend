@@ -17,7 +17,7 @@ jobs:
 
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.118.0
 
       - name: Démarrer Postgres local (applique migrations + seed)
         run: supabase db start
