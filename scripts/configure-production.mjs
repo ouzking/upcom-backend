@@ -115,6 +115,7 @@ if (resendKey) {
 // --- Secrets des Edge Functions ----------------------------------------------
 const secrets = [
   { name: "ALLOWED_ORIGINS", value: allowedOrigins.join(",") },
+  { name: "SITE_PUBLIC_URL", value: siteUrl },
   { name: "ADMIN_APP_URL", value: adminUrl },
   { name: "ADMIN_INVITE_REDIRECT_URL", value: `${adminUrl}/auth/accept-invite` },
 ];

@@ -3,12 +3,12 @@
  *
  * Enregistre un message du formulaire de contact (même chaîne de sécurité que
  * submit-quote-request : validation, honeypot, Turnstile, rate-limit) puis
- * notifie l'équipe en arrière-plan.
+ * notifie l'équipe et accuse réception au visiteur en arrière-plan.
  */
 import { runInBackground } from "../_shared/background.ts";
 import type { SubmitContactMessageResult } from "../_shared/contracts.ts";
 import { databaseError, ok, readJsonBody, serve } from "../_shared/http.ts";
-import { sendContactNotification } from "../_shared/notifications.ts";
+import { sendContactNotification, sendRequesterAcknowledgement } from "../_shared/notifications.ts";
 import { enforceRateLimit } from "../_shared/rate-limit.ts";
 import { getClientIp, hashIp, truncate, verifyCaptcha } from "../_shared/security.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
@@ -47,6 +47,8 @@ serve({
     if (error) throw databaseError("insert contact_message", error);
 
     runInBackground("send-contact-notification", () => sendContactNotification(admin, data.id));
+    runInBackground("contact-acknowledgement", () =>
+      sendRequesterAcknowledgement(admin, { kind: "contact", to: input.email, name: input.name, topic: input.subject }));
 
     return ok<SubmitContactMessageResult>(ctx, { id: data.id }, 201);
   },

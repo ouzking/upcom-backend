@@ -3,7 +3,7 @@ import { assert, assertEquals, assertThrows } from "jsr:@std/assert@1";
 import { escapeHtml } from "./email.ts";
 import { HttpError } from "./http.ts";
 import { safeEqual } from "./security.ts";
-import { renderNotification } from "./templates.ts";
+import { renderAcknowledgement, renderNotification } from "./templates.ts";
 import { contactMessageSchema, inviteUserSchema, parsePayload, quoteRequestSchema } from "./validation.ts";
 
 const validQuote = {
@@ -75,4 +75,25 @@ Deno.test("escapeHtml et gabarit : aucune injection HTML", () => {
   assert(!html.includes("<script>"));
   assert(!html.includes("<b>Hack</b>"));
   assert(!text.includes("Vide"));
+});
+
+Deno.test("accusé de réception : contenu échappé et coordonnées", () => {
+  const { html, text } = renderAcknowledgement({
+    title: "Votre demande de devis est bien reçue",
+    recipientName: "<Awa>",
+    paragraphs: ["Merci."],
+    summary: [["Service", "Communication digitale"], ["Échéance souhaitée", null]],
+    contact: {
+      companyName: "UPCOM AGENCY & SERVICES",
+      address: "Ouest Foire, Cité Air Afrique, Lot 13",
+      phones: ["77 402 74 94", "77 835 92 94"],
+      email: null,
+      websiteUrl: "https://upcomagency.com",
+    },
+  });
+  assert(!html.includes("<Awa>"));
+  assert(html.includes("&lt;Awa&gt;"));
+  assert(html.includes("77 402 74 94 · 77 835 92 94"));
+  assert(!text.includes("Échéance"));
+  assert(text.includes("https://upcomagency.com"));
 });

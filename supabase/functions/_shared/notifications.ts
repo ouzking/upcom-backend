@@ -3,7 +3,7 @@ import type { SupabaseClient } from "./deps.ts";
 import { sendEmail } from "./email.ts";
 import { getEnv, getEnvList } from "./env.ts";
 import { databaseError, HttpError } from "./http.ts";
-import { renderNotification } from "./templates.ts";
+import { type CompanyContact, renderAcknowledgement, renderNotification } from "./templates.ts";
 
 interface NotifyOptions {
   /** Renvoyer même si notified_at est déjà renseigné. */
@@ -143,4 +143,82 @@ export async function sendContactNotification(
 
   await markNotified(admin, "contact_messages", contact.id);
   return { status: "sent" };
+}
+
+// ---------------------------------------------------------------------------
+// Accusé de réception envoyé au visiteur
+// ---------------------------------------------------------------------------
+
+interface SiteSettingsRow {
+  company_name: string;
+  address: string | null;
+  phone_primary: string | null;
+  phone_secondary: string | null;
+  email: string | null;
+}
+
+/** Coordonnées publiques d'UPCOM, lues dans site_settings (source unique, modifiable dans l'admin). */
+async function loadCompanyContact(admin: SupabaseClient): Promise<CompanyContact> {
+  const { data, error } = await admin
+    .from("site_settings")
+    .select("company_name, address, phone_primary, phone_secondary, email")
+    .eq("id", 1)
+    .maybeSingle<SiteSettingsRow>();
+  if (error) throw databaseError("load site_settings", error);
+  return {
+    companyName: data?.company_name ?? "UPCOM AGENCY & SERVICES",
+    address: data?.address ?? null,
+    phones: [data?.phone_primary, data?.phone_secondary].filter((phone): phone is string => Boolean(phone)),
+    email: data?.email ?? null,
+    websiteUrl: getEnv("SITE_PUBLIC_URL") ?? null,
+  };
+}
+
+export interface AcknowledgementInput {
+  kind: "quote" | "contact";
+  to: string;
+  name: string;
+  /** Service demandé (devis) ou objet (contact). */
+  topic: string | null;
+  deadline?: string | null;
+}
+
+/**
+ * Confirme au visiteur la bonne réception de sa demande. Désactivable via
+ * SEND_REQUESTER_ACKNOWLEDGEMENT=false. Le rate-limit par IP et Turnstile
+ * empêchent d'utiliser le formulaire pour inonder une adresse tierce.
+ */
+export async function sendRequesterAcknowledgement(
+  admin: SupabaseClient,
+  input: AcknowledgementInput,
+): Promise<void> {
+  if (getEnv("SEND_REQUESTER_ACKNOWLEDGEMENT") === "false") return;
+
+  const contact = await loadCompanyContact(admin);
+  const isQuote = input.kind === "quote";
+  const { html, text } = renderAcknowledgement({
+    title: isQuote ? "Votre demande de devis est bien reçue" : "Votre message est bien reçu",
+    recipientName: input.name,
+    paragraphs: isQuote
+      ? [
+        `Merci pour l'intérêt que vous portez à ${contact.companyName}. Nous avons bien reçu votre demande de devis.`,
+        "Un membre de notre équipe l'étudie et reviendra vers vous rapidement pour échanger sur votre projet.",
+      ]
+      : [
+        `Merci d'avoir contacté ${contact.companyName}. Nous avons bien reçu votre message.`,
+        "Notre équipe vous répondra dans les meilleurs délais.",
+      ],
+    summary: isQuote
+      ? [["Service", input.topic], ["Échéance souhaitée", input.deadline ?? null]]
+      : [["Objet", input.topic]],
+    contact,
+  });
+
+  await sendEmail({
+    to: [input.to],
+    subject: isQuote ? `${contact.companyName} — Demande de devis reçue` : `${contact.companyName} — Message reçu`,
+    html,
+    text,
+    replyTo: contact.email ?? undefined,
+  });
 }
