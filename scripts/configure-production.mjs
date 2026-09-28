@@ -128,6 +128,15 @@ const SECRET_NAMES = new Set(["RESEND_API_KEY"]);
 console.log(`\nProjet ${ref} — ${APPLY ? "APPLICATION" : "APERÇU (ajoutez --apply pour appliquer)"}\n`);
 
 const current = await api("GET", `/projects/${ref}/config/auth`);
+
+// Offre gratuite : les modèles d'e-mails ne sont modifiables qu'avec un SMTP personnel.
+if (!resendKey && !current.smtp_host) {
+  for (const key of Object.keys(auth)) {
+    if (key.startsWith("mailer_templates_") || key.startsWith("mailer_subjects_")) delete auth[key];
+  }
+  console.log("ℹ Modèles d'e-mails ignorés : ils nécessitent un SMTP personnel (RESEND_API_KEY).\n");
+}
+
 console.log("Auth");
 for (const [key, value] of Object.entries(auth)) {
   const before = current[key];
