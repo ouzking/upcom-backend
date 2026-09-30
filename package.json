@@ -38,7 +38,8 @@
     "functions:deploy": "npx -y supabase@2 functions deploy",
     "functions:test": "cd supabase/functions && deno test --allow-env",
     "functions:check": "cd supabase/functions && deno check */index.ts && deno lint",
-    "prod:configure": "node --env-file=.env scripts/configure-production.mjs"
+    "prod:configure": "node --env-file=.env scripts/configure-production.mjs",
+    "email:dns": "node --env-file=.env scripts/setup-email-dns.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.2"

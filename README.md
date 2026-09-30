@@ -332,6 +332,14 @@ npm run prod:configure              # aperçu, rien n'est modifié
 npm run prod:configure -- --apply   # applique via la Management API
 ```
 
+**E-mails (Resend) — DNS du domaine** : les DNS d'`upcomagency.com` sont gérés par **Netlify DNS** ;
+un enregistrement ajouté chez le registraire est ignoré.
+
+```bash
+npm run email:dns              # compare les enregistrements attendus par Resend et la zone Netlify réellement déléguée
+npm run email:dns -- --apply   # crée ceux qui manquent (+ DMARC), contrôle leur publication, lance la vérification Resend
+```
+
 Le script règle *Site URL* / *Redirect URLs* du back-office, active la connexion e-mail, ferme les
 inscriptions, installe les modèles `supabase/templates/*.html` (invitation, réinitialisation…) et, si une
 clé Resend est fournie, l'envoi SMTP depuis votre domaine ; il met aussi à jour `ALLOWED_ORIGINS`,
