@@ -10,7 +10,8 @@ export type AppRoleName =
   | "super_admin"
   | "editor"
   | "commercial"
-  | "communication_manager";
+  | "communication_manager"
+  | "viewer";
 
 export type AppPermissionName =
   | "services.manage"
@@ -145,3 +146,51 @@ export interface AdminInviteUserResult {
   email: string;
   role: AppRoleName;
 }
+
+// ---------------------------------------------------------------------------
+// POST /functions/v1/admin-delete-user  (permission users.manage)
+// Suppression définitive d'un compte (Auth + profil). Impossible sur son
+// propre compte et sur le dernier super_admin actif.
+// ---------------------------------------------------------------------------
+
+export interface AdminDeleteUserPayload {
+  user_id: string;
+}
+
+export interface AdminDeleteUserResult {
+  user_id: string;
+}
+
+// ---------------------------------------------------------------------------
+// POST /functions/v1/cleanup-media  (permission settings.manage)
+// Images qui ne sont plus utilisées par aucun contenu. `dry_run` (défaut :
+// true) liste sans supprimer ; `dry_run: false` supprime.
+// ---------------------------------------------------------------------------
+
+export interface CleanupMediaPayload {
+  dry_run?: boolean;
+}
+
+export interface OrphanMediaFile {
+  bucket: string;
+  path: string;
+  size_bytes: number | null;
+  created_at: string;
+}
+
+export interface CleanupMediaResult {
+  dry_run: boolean;
+  files: OrphanMediaFile[];
+  total_bytes: number;
+  deleted: number;
+}
+
+// ---------------------------------------------------------------------------
+// POST /functions/v1/trigger-site-rebuild  (toute permission de contenu)
+// Relance la génération du site public (Netlify build hook) pour que les
+// nouveaux contenus aient leur page HTML et leur entrée dans le sitemap.
+// ---------------------------------------------------------------------------
+
+export type TriggerSiteRebuildResult =
+  | { status: "triggered" }
+  | { status: "skipped"; reason: "not_configured" | "recently_triggered" };

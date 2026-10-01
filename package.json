@@ -1,6 +1,6 @@
 {
   "name": "@upcom/supabase",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "UPCOM AGENCY & SERVICES — backend Supabase (migrations, RLS, Storage, Edge Functions) et types partagés.",
   "private": true,
   "license": "UNLICENSED",
@@ -32,7 +32,7 @@
     "db:test": "npx -y supabase@2 test db",
     "db:diff": "npx -y supabase@2 db diff",
     "db:push": "npx -y supabase@2 db push",
-    "types:gen": "npx -y supabase@2.118.0 gen types typescript --local --schema public > src/database.types.ts",
+    "types:gen": "npx -y supabase@2.118.0 gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres --schema public > src/database.types.ts",
     "types:gen:linked": "npx -y supabase@2.118.0 gen types typescript --linked --schema public > src/database.types.ts",
     "functions:serve": "npx -y supabase@2 functions serve --env-file supabase/functions/.env",
     "functions:deploy": "npx -y supabase@2 functions deploy",

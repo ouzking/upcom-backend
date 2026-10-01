@@ -103,3 +103,12 @@ verify_jwt = false
 # Réservée aux utilisateurs connectés : double contrôle (passerelle + code).
 [functions.admin-invite-user]
 verify_jwt = true
+
+[functions.admin-delete-user]
+verify_jwt = true
+
+[functions.cleanup-media]
+verify_jwt = true
+
+[functions.trigger-site-rebuild]
+verify_jwt = true

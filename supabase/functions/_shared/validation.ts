@@ -88,7 +88,7 @@ export const inviteUserSchema = z
   .object({
     email: emailField,
     full_name: optionalText(120, "Nom complet"),
-    role: z.enum(["super_admin", "editor", "commercial", "communication_manager"], {
+    role: z.enum(["super_admin", "editor", "commercial", "communication_manager", "viewer"], {
       errorMap: () => ({ message: "Rôle invalide." }),
     }),
   })
@@ -110,3 +110,11 @@ export function parsePayload<T extends z.ZodTypeAny>(schema: T, input: unknown):
   }
   return result.data;
 }
+
+export const deleteUserSchema = z
+  .object({ user_id: z.string().uuid("Identifiant d'utilisateur invalide.") })
+  .strict();
+
+export const cleanupMediaSchema = z
+  .object({ dry_run: z.boolean().optional() })
+  .strict();

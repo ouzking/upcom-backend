@@ -55,6 +55,8 @@ const extraOrigins = (env("EXTRA_ALLOWED_ORIGINS", { required: false }) ?? "").s
 const resendKey = env("RESEND_API_KEY", { required: false });
 const emailFrom = env("EMAIL_FROM", { required: false });
 const notifyTo = env("NOTIFICATION_EMAIL_TO", { required: false });
+const buildHook = env("NETLIFY_BUILD_HOOK_URL", { required: false });
+if (buildHook && !buildHook.startsWith("https://api.netlify.com/build_hooks/")) fail("NETLIFY_BUILD_HOOK_URL doit commencer par https://api.netlify.com/build_hooks/");
 
 if (resendKey && (!emailFrom || !notifyTo)) fail("Avec RESEND_API_KEY, renseignez aussi EMAIL_FROM et NOTIFICATION_EMAIL_TO.");
 if (/^sb_secret_|service_role/.test(token)) fail("SUPABASE_ACCESS_TOKEN doit être un jeton personnel (sbp_…), pas une clé de projet.");
@@ -122,7 +124,8 @@ const secrets = [
 if (resendKey) {
   secrets.push({ name: "RESEND_API_KEY", value: resendKey }, { name: "EMAIL_FROM", value: emailFrom }, { name: "NOTIFICATION_EMAIL_TO", value: notifyTo });
 }
-const SECRET_NAMES = new Set(["RESEND_API_KEY"]);
+if (buildHook) secrets.push({ name: "NETLIFY_BUILD_HOOK_URL", value: buildHook });
+const SECRET_NAMES = new Set(["RESEND_API_KEY", "NETLIFY_BUILD_HOOK_URL"]);
 
 // --- Exécution ---------------------------------------------------------------
 console.log(`\nProjet ${ref} — ${APPLY ? "APPLICATION" : "APERÇU (ajoutez --apply pour appliquer)"}\n`);

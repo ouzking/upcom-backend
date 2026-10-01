@@ -54,6 +54,9 @@ export const EDGE_FUNCTIONS = {
   sendQuoteNotification: "send-quote-notification",
   sendContactNotification: "send-contact-notification",
   adminInviteUser: "admin-invite-user",
+  adminDeleteUser: "admin-delete-user",
+  cleanupMedia: "cleanup-media",
+  triggerSiteRebuild: "trigger-site-rebuild",
 } as const;
 
 // Libellés français partagés par le site et le back-office
@@ -68,6 +71,7 @@ export const ROLE_LABELS: Record<AppRole, string> = {
   editor: "Éditeur",
   commercial: "Commercial",
   communication_manager: "Responsable communication",
+  viewer: "Observateur (lecture seule)",
 };
 
 export const PERMISSION_LABELS: Record<AppPermission, string> = {

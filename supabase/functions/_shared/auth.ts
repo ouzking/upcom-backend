@@ -43,3 +43,18 @@ export async function requirePermission(
   }
   return access;
 }
+
+/** Exige au moins une des permissions listées (401 / 403 sinon). */
+export async function requireAnyPermission(
+  req: Request,
+  permissions: readonly AppPermissionName[],
+): Promise<StaffAccess> {
+  const access = await getStaffAccess(req);
+  if (!access) {
+    throw new HttpError(401, "unauthorized", "Authentification requise.");
+  }
+  if (!permissions.some((permission) => access.permissions.includes(permission))) {
+    throw new HttpError(403, "forbidden", "Vous n'avez pas les droits nécessaires pour cette action.");
+  }
+  return access;
+}

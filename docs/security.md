@@ -15,18 +15,20 @@ Les policies vérifient des **permissions** ; la matrice rôle → permissions e
 `public.role_permissions` (modifiable uniquement par migration). `super_admin` possède implicitement
 toutes les permissions.
 
-| Permission | super_admin | editor | communication_manager | commercial |
-|---|:-:|:-:|:-:|:-:|
-| `services.manage` | ✅ | ✅ | | |
-| `projects.manage` | ✅ | ✅ | ✅ | |
-| `articles.manage` | ✅ | ✅ | ✅ | |
-| `events.manage` | ✅ | ✅ | ✅ | |
-| `team.manage` | ✅ | ✅ | | |
-| `testimonials.manage` | ✅ | ✅ | ✅ | |
-| `quotes.view` / `quotes.manage` | ✅ | | | ✅ |
-| `contacts.view` / `contacts.manage` | ✅ | | ✅ | ✅ |
-| `settings.manage` | ✅ | | ✅ | |
-| `users.manage` | ✅ | | | |
+| Permission | super_admin | editor | communication_manager | commercial | viewer |
+|---|:-:|:-:|:-:|:-:|:-:|
+| `services.manage` | ✅ | ✅ | | | |
+| `projects.manage` | ✅ | ✅ | ✅ | | |
+| `articles.manage` | ✅ | ✅ | ✅ | | |
+| `events.manage` | ✅ | ✅ | ✅ | | |
+| `team.manage` | ✅ | ✅ | | | |
+| `testimonials.manage` | ✅ | ✅ | ✅ | | |
+| `quotes.view` / `quotes.manage` | ✅ | | | ✅ | view seul |
+| `contacts.view` / `contacts.manage` | ✅ | | ✅ | ✅ | view seul |
+| `settings.manage` | ✅ | | ✅ | | |
+| `users.manage` | ✅ | | | | |
+
+`viewer` (observateur) : lecture seule, pour la supervision.
 
 Tout membre actif du back-office (rôle non nul, `is_active`) peut **lire** les contenus non publiés
 (brouillons) pour la prévisualisation.
@@ -99,6 +101,9 @@ Ces règles sont couvertes par les tests pgTAP de `supabase/tests/database/`.
 | `submit-quote-request`, `submit-contact-message` | site public | CORS, JSON ≤ 32 Ko, zod strict (champs inconnus refusés), honeypot, Turnstile (si configuré), rate-limit IP hashée (3 devis / 5 messages par 15 min) |
 | `send-quote-notification`, `send-contact-notification` | Database Webhook / serveur, ou back-office | en-tête `x-webhook-secret` (comparaison en temps constant) **ou** JWT + `quotes.view` / `contacts.view` ; renvoi forcé réservé au back-office |
 | `admin-invite-user` | back-office | JWT vérifié (passerelle + code) + `users.manage` ; `super_admin` seul peut inviter un `super_admin` |
+| `admin-delete-user` | back-office | JWT + `users.manage` ; jamais son propre compte ni le dernier `super_admin` actif |
+| `cleanup-media` | back-office | JWT + `settings.manage` ; aperçu par défaut, détection en base réservée à la `service_role` |
+| `trigger-site-rebuild` | back-office | JWT + une permission de contenu ; URL du build hook gardée en secret |
 
 Les droits sont lus en base via la RPC `get_my_access` exécutée avec le JWT de l'appelant :
 une seule source de vérité. Les erreurs internes sont journalisées côté serveur et masquées au client.

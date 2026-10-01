@@ -77,6 +77,32 @@ await supabase.functions.invoke("admin-invite-user", {
 Envoie l'invitation Supabase Auth (lien vers `ADMIN_INVITE_REDIRECT_URL`) et attribue le rôle.
 `409 conflict` si l'adresse a déjà un compte.
 
+## `admin-delete-user` (back-office, `users.manage`)
+
+Body `{ user_id }`. Supprime le compte (Auth + profil). `409` pour son propre compte ou le dernier super_admin actif.
+Pour une suspension réversible, préférer `profiles.is_active = false`.
+
+## `cleanup-media` (back-office, `settings.manage`)
+
+Body `{ dry_run?: boolean }` (défaut `true`). Liste puis, avec `dry_run: false`, supprime les images des buckets de
+contenu qui ne sont plus référencées (colonnes `*_path` et textes). Fichiers de moins de 24 h et bucket `site-assets` ignorés.
+
+## `trigger-site-rebuild` (back-office, une permission de contenu)
+
+Relance le build Netlify du site public (secret `NETLIFY_BUILD_HOOK_URL`). Réponse `{ status: "triggered" }` ou
+`{ status: "skipped", reason: "not_configured" | "recently_triggered" }` (une relance par minute au plus).
+
+## Temps réel (back-office)
+
+`quote_requests` et `contact_messages` sont publiées dans `supabase_realtime` ; la RLS s'applique aux abonnés.
+
+```ts
+supabase.channel("leads")
+  .on("postgres_changes", { event: "INSERT", schema: "public", table: "quote_requests" }, (payload) => { /* nouveau devis */ })
+  .on("postgres_changes", { event: "INSERT", schema: "public", table: "contact_messages" }, (payload) => { /* nouveau message */ })
+  .subscribe();
+```
+
 ## Développement local
 
 ```bash

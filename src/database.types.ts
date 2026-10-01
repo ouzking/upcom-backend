@@ -252,10 +252,15 @@ isOneToOne: false
 { Args: Record<PropertyKey, never>; Returns: {
               "permissions": (Database["public"]['Enums']["app_permission"])[],"role": Database["public"]['Enums']["app_role"]
             }[]
+                           },
+"list_orphan_media":
+{ Args: { "min_age"?: string }; Returns: {
+              "bucket_id": string,"created_at": string,"name": string,"size_bytes": number
+            }[]
                            }
           }
           Enums: {
-            "app_permission": "services.manage"|"projects.manage"|"articles.manage"|"events.manage"|"team.manage"|"testimonials.manage"|"quotes.view"|"quotes.manage"|"contacts.view"|"contacts.manage"|"settings.manage"|"users.manage","app_role": "super_admin"|"editor"|"commercial"|"communication_manager","contact_status": "new"|"read"|"replied"|"archived","content_status": "draft"|"published"|"archived","quote_status": "new"|"in_progress"|"contacted"|"converted"|"closed","social_platform": "facebook"|"instagram"|"linkedin"|"x"|"youtube"|"tiktok"|"whatsapp"|"other"
+            "app_permission": "services.manage"|"projects.manage"|"articles.manage"|"events.manage"|"team.manage"|"testimonials.manage"|"quotes.view"|"quotes.manage"|"contacts.view"|"contacts.manage"|"settings.manage"|"users.manage","app_role": "super_admin"|"editor"|"commercial"|"communication_manager"|"viewer","contact_status": "new"|"read"|"replied"|"archived","content_status": "draft"|"published"|"archived","quote_status": "new"|"in_progress"|"contacted"|"converted"|"closed","social_platform": "facebook"|"instagram"|"linkedin"|"x"|"youtube"|"tiktok"|"whatsapp"|"other"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -371,7 +376,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "app_permission": ["services.manage", "projects.manage", "articles.manage", "events.manage", "team.manage", "testimonials.manage", "quotes.view", "quotes.manage", "contacts.view", "contacts.manage", "settings.manage", "users.manage"],"app_role": ["super_admin", "editor", "commercial", "communication_manager"],"contact_status": ["new", "read", "replied", "archived"],"content_status": ["draft", "published", "archived"],"quote_status": ["new", "in_progress", "contacted", "converted", "closed"],"social_platform": ["facebook", "instagram", "linkedin", "x", "youtube", "tiktok", "whatsapp", "other"]
+            "app_permission": ["services.manage", "projects.manage", "articles.manage", "events.manage", "team.manage", "testimonials.manage", "quotes.view", "quotes.manage", "contacts.view", "contacts.manage", "settings.manage", "users.manage"],"app_role": ["super_admin", "editor", "commercial", "communication_manager", "viewer"],"contact_status": ["new", "read", "replied", "archived"],"content_status": ["draft", "published", "archived"],"quote_status": ["new", "in_progress", "contacted", "converted", "closed"],"social_platform": ["facebook", "instagram", "linkedin", "x", "youtube", "tiktok", "whatsapp", "other"]
           }
         }
 } as const
