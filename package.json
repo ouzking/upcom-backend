@@ -1,6 +1,6 @@
 {
   "name": "@upcom/supabase",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "UPCOM AGENCY & SERVICES — backend Supabase (migrations, RLS, Storage, Edge Functions) et types partagés.",
   "private": true,
   "license": "UNLICENSED",

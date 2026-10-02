@@ -192,13 +192,13 @@ isOneToOne: false
                   ]
                 },"site_settings": {
                   Row: {
-                    "address": string | null,"company_name": string,"created_at": string,"description": string | null,"email": string | null,"favicon_path": string | null,"id": number,"logo_path": string | null,"map_url": string | null,"opening_hours": string | null,"phone_primary": string | null,"phone_secondary": string | null,"tagline": string | null,"updated_at": string,"whatsapp_number": string | null
+                    "address": string | null,"company_name": string,"created_at": string,"description": string | null,"email": string | null,"favicon_path": string | null,"id": number,"legal_form": string | null,"logo_path": string | null,"map_url": string | null,"ninea": string | null,"opening_hours": string | null,"phone_primary": string | null,"phone_secondary": string | null,"publication_director": string | null,"rccm": string | null,"tagline": string | null,"updated_at": string,"whatsapp_number": string | null
                   }
                   Insert: {
-                    "address"?: string | null,"company_name": string,"created_at"?: string,"description"?: string | null,"email"?: string | null,"favicon_path"?: string | null,"id"?: number,"logo_path"?: string | null,"map_url"?: string | null,"opening_hours"?: string | null,"phone_primary"?: string | null,"phone_secondary"?: string | null,"tagline"?: string | null,"updated_at"?: string,"whatsapp_number"?: string | null
+                    "address"?: string | null,"company_name": string,"created_at"?: string,"description"?: string | null,"email"?: string | null,"favicon_path"?: string | null,"id"?: number,"legal_form"?: string | null,"logo_path"?: string | null,"map_url"?: string | null,"ninea"?: string | null,"opening_hours"?: string | null,"phone_primary"?: string | null,"phone_secondary"?: string | null,"publication_director"?: string | null,"rccm"?: string | null,"tagline"?: string | null,"updated_at"?: string,"whatsapp_number"?: string | null
                   }
                   Update: {
-                    "address"?: string | null,"company_name"?: string,"created_at"?: string,"description"?: string | null,"email"?: string | null,"favicon_path"?: string | null,"id"?: number,"logo_path"?: string | null,"map_url"?: string | null,"opening_hours"?: string | null,"phone_primary"?: string | null,"phone_secondary"?: string | null,"tagline"?: string | null,"updated_at"?: string,"whatsapp_number"?: string | null
+                    "address"?: string | null,"company_name"?: string,"created_at"?: string,"description"?: string | null,"email"?: string | null,"favicon_path"?: string | null,"id"?: number,"legal_form"?: string | null,"logo_path"?: string | null,"map_url"?: string | null,"ninea"?: string | null,"opening_hours"?: string | null,"phone_primary"?: string | null,"phone_secondary"?: string | null,"publication_director"?: string | null,"rccm"?: string | null,"tagline"?: string | null,"updated_at"?: string,"whatsapp_number"?: string | null
                   }
                   Relationships: [
                     
